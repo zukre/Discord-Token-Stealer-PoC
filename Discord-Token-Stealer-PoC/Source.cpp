@@ -74,7 +74,7 @@ int main()
 				/*
 				The string will be treated as token if
 				- It starts with starting_char
-				- It contains one of these: ., _, -,
+				- It contains atleast one of these: ., _, -,
 				- It doesn't contain ',', {, }, <, >, /
 				- The last character of the string is "
 				*/
